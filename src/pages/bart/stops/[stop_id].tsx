@@ -5,43 +5,38 @@ import 'ol/ol.css';
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
 import { Point } from 'ol/geom.js';
-import { Coordinate } from 'ol/coordinate.js';
+import { useRouter } from 'next/router.js';
 import { useStop, useMap } from '@/common';
 
 export default function BARTStop() {
+    const router = useRouter()
+    const { stop_id } = router.query
     const mapRef = useRef<HTMLDivElement>(null);
-    const { data: stop_data } = useStop();
-    const { data: map } = useMap(mapRef);
+    const dataRef = useRef<HTMLDivElement>(null);
+    const { data: stop_data } = useStop(stop_id as string);
+    const map = useMap(mapRef);
 
     if (stop_data && map && map.getAllLayers().length == 1) {
+        const name = stop_data.stops[0].stop_name;
+        const coordinates = stop_data.stops[0].geometry.coordinates;
+        map.getView().setCenter(coordinates);
         map.addLayer(
             new VectorLayer({
                 source: new VectorSource({
-                    features: stop_data["Contents"]["dataObjects"]["ScheduledStopPoint"].map((stop: any) =>
+                    features: [
                         new Feature({
-                            geometry: new Point(
-                                Object.values(
-                                    stop['Location']
-                                ).map(x => parseFloat(x as string)) as Coordinate
-                            ),
-                            name: stop['Name']
+                            geometry: new Point(coordinates)
                         })
-                    )
+                    ]
                 }),
                 style: {
-                  'circle-radius': 5,
-                  'circle-fill-color': 'red',
+                  'circle-radius': 7,
+                  'circle-fill-color': 'blue',
                 },
             }),
         );
 
-        map.on('click', function (event) {
-            const feature = map.getFeaturesAtPixel(event.pixel)[0];
-            if (!feature) {
-                return;
-            }
-            console.log(feature.getProperties())
-        });
+        dataRef.current!.innerHTML = name;
     }
 
 	return (
@@ -53,7 +48,8 @@ export default function BARTStop() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main>
-                <div ref={mapRef} style={{ height: "1000px", width: "2000px"}}></div>
+                <div ref={mapRef} style={{ height: "500px", width: "500px"}}></div>
+                <h1 ref={dataRef}>loading stop...</h1>
             </main>
         </>
     );
