@@ -1,13 +1,13 @@
-import { Link } from '@nextui-org/react';
+import Link from 'next/link';
 import { useStop } from '@/common';
 
-export default function BARTTripRowStop(props: { stop_id: string }) {
+export default function TripRowStop(props: { agency_id: string, stop_id: string }) {
 	const { data: stop_data } = useStop(props.stop_id);
 	if (!stop_data) return <>Loading...</>;
 
 	return (
 		<>
-            <Link href={`/bart/stops/${props.stop_id}`}>
+            <Link href={`/${props.agency_id}/stops/${props.stop_id}`}>
                 {stop_data ? stop_data.stops[0].stop_name : "Loading..."}
             </Link>
         </>

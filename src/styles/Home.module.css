@@ -1,12 +1,12 @@
 .trains {
-  font-family: Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
 }
 
 .trains td, .trains th {
-  border: 1px solid #ddd;
-  padding: 8px;
+    border: 1px solid #ddd;
+    padding: 8px;
 }
 
 .trains tr:nth-child(even){background-color: #4d4d4d;}
@@ -14,24 +14,46 @@
 .trains tr:hover {background-color: #7a7a7a;}
 
 .trains th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #040caa;
-  color: white;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #040caa;
+    color: white;
 }
 
-.stops {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: xx-large;
-  border-collapse: collapse;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
+.list {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: xx-large;
+    border-collapse: collapse;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
 }
 
 .buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.container {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.container_home {
+    max-width: 50%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: xx-large;
+}
+
+.map { 
+    height: 1000px;
+    width: 1000px; 
+    margin: 20px;
 }
