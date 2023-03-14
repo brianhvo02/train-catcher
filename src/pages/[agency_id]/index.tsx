@@ -1,7 +1,7 @@
 import styles from '@/styles/Home.module.css';
 
 import { useState } from "react";
-import { useRT } from '@/common';
+import { useRT, useAgency } from '@/common';
 import TripRowStop from '@/common/trip_row_stop';
 import Link from 'next/link';
 import { useRouter } from 'next/router.js';
@@ -15,6 +15,7 @@ export default function BARTTrips() {
 
 	const [ stopId, setStopId ] = useState("");
 	const { data: rt_data } = useRT(agency_id as string);
+	const { data: agency_data } = useAgency(agency_id as string);
 
 	return (
 		<main className={styles.container_home}>
@@ -35,7 +36,7 @@ export default function BARTTrips() {
 				</thead>
 				<tbody>
 				{
-					rt_data ? rt_data.entity.filter(entity => entity.tripUpdate?.trip.routeId && entity.tripUpdate?.trip.routeId?.toLowerCase().includes(stopId.toLowerCase()) && entity.tripUpdate?.stopTimeUpdate!.length != 0 && entity.tripUpdate?.stopTimeUpdate![0].arrival?.time).map((entity, i) => {
+					rt_data && agency_data ? rt_data.entity.filter(entity => entity.tripUpdate?.trip.routeId && entity.tripUpdate?.trip.routeId?.toLowerCase().includes(stopId.toLowerCase()) && entity.tripUpdate?.stopTimeUpdate!.length != 0 && entity.tripUpdate?.stopTimeUpdate![0].arrival?.time).map((entity, i) => {
 						return (
 							<tr key={i.toString()}>
 								<td>{entity.id}</td>
@@ -43,7 +44,7 @@ export default function BARTTrips() {
 									<Link href={`/${agency_id}/lines/${entity.tripUpdate?.trip?.routeId}`}>{entity.tripUpdate?.trip?.routeId}</Link>
 								</td>
 								<td>
-									<TripRowStop agency_id={agency_id as string} stop_id={entity.tripUpdate?.stopTimeUpdate![0].stopId!} />
+									<TripRowStop agency_id={agency_id as string} feed_id={agency_data.agencies[0].feed_version.feed.onestop_id} stop_id={entity.tripUpdate?.stopTimeUpdate![0].stopId!} />
 								</td>
 								<td>{timestampToDate(entity.tripUpdate?.stopTimeUpdate![0].departure?.time as number)}</td>
 							</tr>

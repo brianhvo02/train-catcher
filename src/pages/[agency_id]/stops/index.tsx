@@ -6,7 +6,7 @@ import 'ol/ol.css';
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
 import { Point } from 'ol/geom.js';
-import { transitland_fetcher, useMap } from '@/common';
+import { transitland_fetcher, useMap, useAgency, useStops } from '@/common';
 import Link from 'next/link';
 import styles from '@/styles/Home.module.css';
 import useSWRInfinite from 'swr/infinite'
@@ -14,13 +14,6 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import BaseLayer from 'ol/layer/Base.js';
 import { useRouter } from 'next/router.js';
-
-const operator_onestop_id = 'o-9q9-bart';
-const getKey = (pageIndex: number, previousPageData: any) => {
-    if (previousPageData && previousPageData.stops.length < 20) return null;
-    if (pageIndex === 0) return `/stops?served_by_onestop_ids=${operator_onestop_id}`;
-    return `/stops?served_by_onestop_ids=${operator_onestop_id}&after=${previousPageData.meta.after}`
-}
 
 const layers: BaseLayer[] = [
     new TileLayer({
@@ -30,16 +23,16 @@ const layers: BaseLayer[] = [
 
 export default function BARTStops() {
     const { agency_id } = useRouter().query;
+    
     const [done, setDone] = useState(false);
     const [updateMap, setUpdateMap] = useState(true);
     const [highlight, setHighlight] = useState(0);
+
     const mapRef = useRef<HTMLDivElement>(null);
     const map = useMap(mapRef);
 
-    const { data, size, setSize } = useSWRInfinite(getKey, transitland_fetcher, {
-        revalidateFirstPage: false,
-        revalidateAll: false
-    });
+    const { data: agency_data } = useAgency(agency_id as string);
+    const { data, size, setSize } = useStops(agency_data ? agency_data.agencies[0].onestop_id : null);
 
     function update(next: boolean) {
         if (next) {

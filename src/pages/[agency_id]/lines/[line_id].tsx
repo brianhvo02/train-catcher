@@ -6,9 +6,8 @@ import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
 import { Point } from 'ol/geom.js';
 import { useRouter } from 'next/router.js';
-import { useStop, useMap, transitland_fetcher } from '@/common';
+import { useAgency, useLine, useMap } from '@/common';
 import styles from '@/styles/Home.module.css';
-import useSWRImmutable from 'swr/immutable';
 import GeoJSON from 'ol/format/GeoJSON';
 import Link from 'next/link.js';
 
@@ -22,7 +21,10 @@ export default function BARTLine() {
     const mapRef = useRef<HTMLDivElement>(null);
     const map = useMap(mapRef);
 
-    const { data: route_data } = useSWRImmutable(() => `/routes/f-sf~bay~area~rg:BA:${line_id}.geojson`, transitland_fetcher);
+    const { data: agency_data } = useAgency(agency_id as string);
+    const { data: route_data } = useLine(agency_data ? agency_data.agencies[0].feed_version.feed.onestop_id : null, agency_id as string, line_id as string);
+
+    console.log(route_data)
 
     useEffect(() => {
         if (map && !done) {
